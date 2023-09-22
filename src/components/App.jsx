@@ -24,10 +24,22 @@ export class App extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
+
+    const { name, number, contacts } = this.state;
+
+    const existingContact = contacts.find(
+      (contact) => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (existingContact) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
+
     const newContact = {
       id: nanoid(),
-      name: this.state.name,
-      number: this.state.number,
+      name,
+      number,
     };
 
     this.setState((prevState) => ({
@@ -45,72 +57,71 @@ export class App extends Component {
   };
 
   render() {
-  const { name, number, filter, contacts } = this.state;
+    const { name, number, filter, contacts } = this.state;
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+    const filteredContacts = contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
 
-  return (
-    <>
-      <form onSubmit={this.handleSubmit}>
-        <h1>Phonebook</h1>
+    return (
+      <>
+        <form onSubmit={this.handleSubmit}>
+          <h1>Phonebook</h1>
+          <input
+            type="text"
+            name="name"
+            title="Name may contain only letters, apostrophe, dash, and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+            required
+            onChange={this.handleChange}
+            value={name}
+            id={this.loginInputId}
+          />
+
+          <h3>Number</h3>
+          <input
+            type="tel"
+            name="number"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            required
+            onChange={this.handleChange}
+            value={number}
+            id={this.loginInputId}
+          />
+
+          <button type="submit">Add contact</button>
+        </form>
+        <h2>Contacts</h2>
+        <h3>Find contacts by name</h3>
         <input
           type="text"
-          name="name"
-          title="Name may contain only letters, apostrophe, dash, and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
+          name="filter"
           onChange={this.handleChange}
-          value={name}
+          value={filter}
           id={this.loginInputId}
         />
 
-        <h3>Number</h3>
-        <input
-          type="tel"
-          name="number"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-          onChange={this.handleChange}
-          value={number}
-          id={this.loginInputId}
-        />
-
-        <button type="submit">Add contact</button>
-      </form>
-      <h2>Contacts</h2>
-      <h3>Find contacts by name</h3>
-      <input
-        type="text"
-        name="filter"
-        onChange={this.handleChange}
-        value={filter}
-        id={this.loginInputId}
-      />
-
-      {filter === '' ? (
-        <ul>
-          {contacts.map((contact) => (
-            <li key={contact.id}>
-              <span>{contact.name}: {contact.number}</span>
-              <button type='button'>Delete</button>
-            </li>
-          ))}
-        </ul>
-      ) : filteredContacts.length > 0 ? (
-        <ul>
-          {filteredContacts.map((contact) => (
-            <li key={contact.id}>
-              <span>{contact.name}: {contact.number}</span>
-              <button type='button'>Delete</button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No matching contacts found</p>
-      )}
-    </>
-  );
-}
-
+        {filter === '' ? (
+          <ul>
+            {contacts.map((contact) => (
+              <li key={contact.id}>
+                <span>{contact.name}: {contact.number}</span>
+                <button type="button">Delete</button>
+              </li>
+            ))}
+          </ul>
+        ) : filteredContacts.length > 0 ? (
+          <ul>
+            {filteredContacts.map((contact) => (
+              <li key={contact.id}>
+                <span>{contact.name}: {contact.number}</span>
+                <button type="button">Delete</button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No matching contacts found</p>
+        )}
+      </>
+    );
+  }
 }
