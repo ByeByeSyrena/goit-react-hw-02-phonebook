@@ -47,7 +47,6 @@ export class App extends Component {
   render() {
   const { name, number, filter, contacts } = this.state;
 
-  // Filter the contacts based on the user's input
   const filteredContacts = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
@@ -93,7 +92,8 @@ export class App extends Component {
         <ul>
           {contacts.map((contact) => (
             <li key={contact.id}>
-              {contact.name}: {contact.number}
+              <span>{contact.name}: {contact.number}</span>
+              <button type='button'>Delete</button>
             </li>
           ))}
         </ul>
@@ -101,7 +101,8 @@ export class App extends Component {
         <ul>
           {filteredContacts.map((contact) => (
             <li key={contact.id}>
-              {contact.name}: {contact.number}
+              <span>{contact.name}: {contact.number}</span>
+              <button type='button'>Delete</button>
             </li>
           ))}
         </ul>
