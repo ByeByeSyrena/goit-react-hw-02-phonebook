@@ -1,7 +1,10 @@
+import css from './Filter.module.css';
+
 const Filter = ({ handleChange, filter, loginInputId }) => {
   return (
-    <>
-      <h3>Find contacts by name</h3>
+    <div className={css.filterWrapper}>
+      <h2>Contacts</h2>
+      <h3 className={css.filterHeadline}>Find contacts by name</h3>
       <input
         type="text"
         name="filter"
@@ -9,7 +12,7 @@ const Filter = ({ handleChange, filter, loginInputId }) => {
         value={filter}
         id={loginInputId}
       />
-    </>
+    </div>
   );
 };
 

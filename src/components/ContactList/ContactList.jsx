@@ -1,14 +1,17 @@
+import SelectedContact from 'components/SelectedContact/SelectedContact';
+import css from './ContactList.module.css';
+
 const ContactForm = ({ filteredContacts, handleRemove }) => {
   return (
-    <ul>
+    <ul className={css.list}>
       {filteredContacts.map(contact => (
-        <li key={contact.id}>
-          <span>
-            {contact.name}: {contact.number}
-          </span>
-          <button type="button" onClick={() => handleRemove(contact.id)}>
-            Delete
-          </button>
+        <li key={contact.id} className={css.listItem}>
+          <SelectedContact
+            name={contact.name}
+            number={contact.number}
+            handleRemove={handleRemove}
+            id={contact.id}
+          />
         </li>
       ))}
     </ul>

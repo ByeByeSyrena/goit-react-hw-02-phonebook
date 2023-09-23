@@ -79,7 +79,6 @@ export class App extends Component {
     return (
       <>
         <ContactForm onSubmit={this.handleSubmit} />
-        <h2>Contacts</h2>
         <Filter
           handleChange={this.handleChange}
           filter={filter}
