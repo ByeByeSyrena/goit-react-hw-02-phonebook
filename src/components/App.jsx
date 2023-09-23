@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import 'normalize.css';
 import { nanoid } from 'nanoid';
+import ContactForm from './ContactForm/ContactForm';
+import ContactList from './ContactList/ContactList';
+import Filter from './Filter/Filter';
 
 export class App extends Component {
   loginInputId = nanoid();
 
   state = {
-    name: '',
-    number: '',
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
       { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
@@ -17,18 +18,16 @@ export class App extends Component {
     filter: '',
   };
 
-  handleChange = (event) => {
+  handleChange = event => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-
-    const { name, number, contacts } = this.state;
+  handleSubmit = (name, number) => {
+    const { contacts } = this.state;
 
     const existingContact = contacts.find(
-      (contact) => contact.name.toLowerCase() === name.toLowerCase()
+      contact => contact.name.toLowerCase() === name.toLowerCase()
     );
 
     if (existingContact) {
@@ -42,11 +41,28 @@ export class App extends Component {
       number,
     };
 
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
     }));
 
     this.reset();
+  };
+
+  handleRemove = contactId => {
+    const updatedContacts = this.state.contacts.filter(
+      contact => contact.id !== contactId
+    );
+
+    this.setState({ contacts: updatedContacts });
+  };
+
+  showSelectedContact = () => {
+    const { filter, contacts } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
   };
 
   reset = () => {
@@ -57,70 +73,22 @@ export class App extends Component {
   };
 
   render() {
-    const { name, number, filter, contacts } = this.state;
-
-    const filteredContacts = contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
+    const { filter } = this.state;
+    const filteredContacts = this.showSelectedContact();
 
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
-          <h1>Phonebook</h1>
-          <input
-            type="text"
-            name="name"
-            title="Name may contain only letters, apostrophe, dash, and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-            onChange={this.handleChange}
-            value={name}
-            id={this.loginInputId}
-          />
-
-          <h3>Number</h3>
-          <input
-            type="tel"
-            name="number"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-            onChange={this.handleChange}
-            value={number}
-            id={this.loginInputId}
-          />
-
-          <button type="submit">Add contact</button>
-        </form>
+        <ContactForm onSubmit={this.handleSubmit} />
         <h2>Contacts</h2>
-        <h3>Find contacts by name</h3>
-        <input
-          type="text"
-          name="filter"
-          onChange={this.handleChange}
-          value={filter}
-          id={this.loginInputId}
+        <Filter
+          handleChange={this.handleChange}
+          filter={filter}
+          loginInputId={this.loginInputId}
         />
-
-        {filter === '' ? (
-          <ul>
-            {contacts.map((contact) => (
-              <li key={contact.id}>
-                <span>{contact.name}: {contact.number}</span>
-                <button type="button">Delete</button>
-              </li>
-            ))}
-          </ul>
-        ) : filteredContacts.length > 0 ? (
-          <ul>
-            {filteredContacts.map((contact) => (
-              <li key={contact.id}>
-                <span>{contact.name}: {contact.number}</span>
-                <button type="button">Delete</button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No matching contacts found</p>
-        )}
+        <ContactList
+          filteredContacts={filteredContacts}
+          handleRemove={this.handleRemove}
+        />
       </>
     );
   }
