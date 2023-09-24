@@ -6,8 +6,6 @@ import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
 
 export class App extends Component {
-  loginInputId = nanoid();
-
   state = {
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -44,16 +42,12 @@ export class App extends Component {
     this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
     }));
-
-    this.reset();
   };
 
   handleRemove = contactId => {
-    const updatedContacts = this.state.contacts.filter(
-      contact => contact.id !== contactId
-    );
-
-    this.setState({ contacts: updatedContacts });
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(({ id }) => contactId !== id),
+    }));
   };
 
   showSelectedContact = () => {
@@ -65,13 +59,6 @@ export class App extends Component {
     );
   };
 
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
-  };
-
   render() {
     const { filter } = this.state;
     const filteredContacts = this.showSelectedContact();
@@ -79,11 +66,7 @@ export class App extends Component {
     return (
       <>
         <ContactForm onSubmit={this.handleSubmit} />
-        <Filter
-          handleChange={this.handleChange}
-          filter={filter}
-          loginInputId={this.loginInputId}
-        />
+        <Filter handleChange={this.handleChange} filter={filter} />
         <ContactList
           filteredContacts={filteredContacts}
           handleRemove={this.handleRemove}
